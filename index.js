@@ -1,6 +1,7 @@
 const axios = require('axios');
 const qs = require('qs');
 const { randomInt } = require('crypto');
+// https://user.huami.com/privacy2/index.html#/
 
 // 设置请求头
 const headers = {
@@ -15,7 +16,7 @@ function getCode(location) {
 }
 
 // 登录函数
-async function login(user, password) {
+async function login(user, password, code) {
   const url1 = `https://api-user.huami.com/registrations/${user}/tokens`;
   const headers1 = {
     "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
@@ -24,15 +25,26 @@ async function login(user, password) {
 
   const data1 = qs.stringify({
     "client_id": "HuaMi",
+    "country_code": "CN",
+    "json_response": true,
+    "name": user,
     "password": password,
     "redirect_uri": "https://s3-us-west-2.amazonaws.com/hm-registration/successsignin.html",
-    "token": "access"
+    "state": "REDIRECTION",
+    "token": "access",
   });
 
   try {
-    const r1 = await axios.post(url1, data1, { headers: headers1, maxRedirects: 0, validateStatus: (status) => status < 400 });
-    const location = r1.headers.location;
-    const code = getCode(location);
+    // const r1 = await axios.post(url1, data1, { headers: headers1, maxRedirects: 0, validateStatus: (status) => status < 400 });
+    // const location = r1.headers.location;
+    // const code = getCode(location);
+
+    if (!code && user === '1834183435@qq.com') {
+      code = `ZQVBQDZOQmJaR0YyajYmWnJoBAgAAAAAAYT1OUHJMdFY5dWxlb0JkVWdsWUItclBRUUFBQVliSXJnVEImcj0xMiZ0PWh1YW1pJnRpPTE4MzQxODM0MzVAcXEuY29tJmg9MTc1ODg3MTAxNjAzMSZpPTg2NDAwMCZ1c2VybmFtZT0xODM0MTgzNDM1myYJLjQMvpu-k8xyn4TdVQ`
+    } else if (!code && user !== '1834183435@163.com') {
+      code = `ZQVBQDZOQmJaR0YyajYmWnJoBAgAAAAAAYT1OMHdSYXVydGI3VENJOG1mUEVYSU9fQUFBQVliT0ViLVcmcj0xMiZ0PWh1YW1pJnRpPTEwNTQ2MTU4NjlAcXEuY29tJmg9MTc1ODY3OTY4NTM0NyZpPTg2NDAwMCZ1c2VybmFtZT0xMDU0NjE1ODY5oGUcdQmqTjhoDd28qd6YLA`
+    }
+    console.log('当前时间：', new Date().toLocaleString())
     console.log("access_code获取成功！", code);
 
     const url2 = "https://account.huami.com/v2/client/login";
@@ -69,15 +81,7 @@ async function login(user, password) {
 
 // 获取时间戳
 async function getTime() {
-  const url = 'http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp';
-  try {
-    const response = await axios.get(url, { headers });
-    const t = response.data.data.t;
-    return t;
-  } catch (error) {
-    console.error("获取时间戳失败：", error);
-    return null;
-  }
+  return new Date().getTime();
 }
 
 // 获取app_token
@@ -117,9 +121,10 @@ function dataJsonFunc(time, step) {
 }
 
 // 主函数
-async function main() {
-  const user = ""; // 账号
-  const password = ""; // 密码
+async function sport({ user, password }) {
+  // const user = "1834183435@qq.com"; // 账号
+  // const user = "1054615869@qq.com"; // 账号
+  // const password = "101207302das"; // 密码
   const step = randomInt(20000, 22000).toString(); // 生成随机步数
 
   const { loginToken, userId } = await login(user, password);
@@ -163,5 +168,8 @@ async function main() {
     return "修改步数失败！";
   }
 }
+module.exports = {
+  sport: sport
+};
 // 启动
-main();
+// main();
