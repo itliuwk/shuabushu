@@ -124,7 +124,6 @@ function dataJsonFunc(time, step) {
 async function sport({ user, password }) {
   // const user = "1834183435@qq.com"; // 账号
   // const user = "1054615869@qq.com"; // 账号
-  // const password = "101207302das"; // 密码
   const step = randomInt(20000, 22000).toString(); // 生成随机步数
 
   const { loginToken, userId } = await login(user, password);
