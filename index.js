@@ -8,9 +8,11 @@ const server = http.createServer(async (req, res) => {
   if (req.url.startsWith('/sport')) {
     const parsedUrl = url.parse(req.url);
     const query = querystring.parse(parsedUrl.query);
-    const result = await main.sport(query)
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(result);
+    const runner = new main.MiMotionRunner(query.user, query.pwd,);
+    const [msg, ok] = await runner.loginAndPostStep(query.step);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    console.log('[ msg ] >', msg)
+    res.end(msg);
   } else {
     res.writeHead(405, { 'Content-Type': 'text/plain', });
     // 发送错误消息并结束响应
