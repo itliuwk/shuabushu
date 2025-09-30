@@ -5,7 +5,7 @@
  * pwd   - 密码
  * step  - 固定步数（必填）
  * 示例：
- * curl "http://你的服务器:3000?user=13800138000&pwd=123456&step=20000"
+ * curl "http://你的服务器:6789?user=13800138000&pwd=123456&step=20000"
  */
 // https://user.huami.com/privacy2/index.html#/
 const qs = require('qs');
